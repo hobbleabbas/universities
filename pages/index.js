@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient'
 import { useState, useEffect } from 'react'
 import EmptyState from '../components/EmptyState'
 import ChooseUniversitiesView from '../components/ChooseUniversitiesView'
+import Link from 'next/link'
 
 export default function Home() {
 
@@ -97,6 +98,7 @@ export default function Home() {
             </div>
           </div>
         </main>
+        <p className='text-md font-medium text-center'>A <Link href = "https://www.hobble.ca"><a href = "https://www.hobble.ca" className='text-blue-600'>Hobbleabbas</a></Link> Production</p>
       </div>
     </div>
   )
