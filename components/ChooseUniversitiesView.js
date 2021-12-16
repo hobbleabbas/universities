@@ -1,6 +1,10 @@
 import { CheckCircleIcon, PlusCircleIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react/cjs/react.development";
 import { supabase } from "../lib/supabaseClient";
+import { firestore } from '../lib/firebaseClient';
+import { collection, QueryDocumentSnapshot, DocumentData, query, where, limit, getDocs, doc, getDoc, setDoc } from "@firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/router";
 
 export default function ChooseUniversitiesView() {
 
@@ -93,18 +97,63 @@ export const UniversitiesView = ({ universities, applications, setApplications, 
 export const ProgramsView = ({ applications }) => {
 
     const [selectedTotal, setSelectedTotal] = useState(0);
+    const [selectedPrograms, setSelectedPrograms] = useState([]);
+    const router = useRouter();
     const [loading, setLoading] = useState(false)
 
-    const addApplication = async () => {
-        const { data, error } = await supabase
-            .from('applications')
-            .insert({})
+    const addApplication = async (program) => {
         
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(data)
+        // Create the application id
+        const application_id = uuidv4();
+
+        // Fetch the template
+        const template = await fetchTemplate(String(program.id));
+        const status = await createApplication(template, application_id);
+
+        if (status === true) {
+            // Add the application to the database
+            const { data, error } = await supabase
+                .from('applications')
+                .insert({
+                    id: application_id,
+                    program: 1,
+                    user: supabase.auth.user().id,
+                })
+
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(data)
+
+                // if (selectedPrograms.indexOf(program.id) == selectedPrograms.length - 1) {
+                //     router.reload(window.location.pathname)
+                // }
+            }
         }
+
+    }
+
+    // Fetch the application template
+    const fetchTemplate = async (template_id) => {
+        const templateReference = doc(firestore, "templates", template_id);
+        const template = await getDoc(templateReference);
+        
+        return template.data();
+    }
+
+    const createApplication = async (template, application_id) => {
+        await setDoc(doc(firestore, "applications", application_id), template);
+
+        return true;
+    }
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        for (const program of selectedPrograms) {
+            await addApplication(program);
+        }
+
+        
     }
 
     return (
@@ -113,7 +162,7 @@ export const ProgramsView = ({ applications }) => {
             <div className="mt-2"/>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {applications.map((application) => (
-                    <ProgramSelector key={application.id} university={application} selectedTotal={selectedTotal} setSelectedTotal={setSelectedTotal} />
+                    <ProgramSelector key={application.id} university={application} selectedTotal={selectedTotal} setSelectedTotal={setSelectedTotal} selectedPrograms={selectedPrograms} setSelectedPrograms={setSelectedPrograms} />
                 ))}
             </div>
 
@@ -128,14 +177,20 @@ export const ProgramsView = ({ applications }) => {
                     <button
                         type="button"
                         onClick={() => {
-                            setLoading(true)
+                            handleSubmit()
                         }}
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                         {
                             loading ?
                             
-                            <>Getting Everything Ready...</>
+                            <span className="flex">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Getting Everything Ready...
+                            </span>
 
                             :
 
@@ -148,7 +203,7 @@ export const ProgramsView = ({ applications }) => {
     )
 }
 
-export const ProgramSelector = ({ university, selectedTotal, setSelectedTotal }) => {
+export const ProgramSelector = ({ university, selectedTotal, setSelectedTotal, setSelectedPrograms }) => {
 
     const [programs, setPrograms] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -195,6 +250,7 @@ export const ProgramSelector = ({ university, selectedTotal, setSelectedTotal })
                     onChange={(e) => {
                         if (e.target.value != "NULL") {
                             setSelectedTotal(selectedTotal + 1)
+                            setSelectedPrograms([...programs, e.target.value])
                         }
                     }}
                 >

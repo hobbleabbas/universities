@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabaseClient'
 import { useState, useEffect } from 'react'
 import EmptyState from '../components/EmptyState'
 import ChooseUniversitiesView from '../components/ChooseUniversitiesView'
+import ApplicationsListView from '../components/ApplicationsListView'
 import Link from 'next/link'
 
 export default function Home() {
@@ -76,10 +77,7 @@ export default function Home() {
                   {
                     applications.length > 0 ?
 
-                    <div>
-                      <h2 className="text-xl font-bold">Your Applications</h2>
-                      Nice
-                    </div>
+                    <ApplicationsListView applications = {applications} />
 
                     : chooseUniversities ?
 
@@ -103,5 +101,3 @@ export default function Home() {
     </div>
   )
 }
-
-
