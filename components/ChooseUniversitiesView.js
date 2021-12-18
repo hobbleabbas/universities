@@ -34,7 +34,7 @@ export default function ChooseUniversitiesView() {
     return (
         <div>
             {
-                loading ? 
+                loading == true ? 
 
                 <p>Loading...</p>
 
