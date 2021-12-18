@@ -112,7 +112,7 @@ export const EssaysView = ({ application }) => {
     return (
         <div>
             {application.essays.map((essay) => (
-                <EssayComponent essay={essay} />
+                <EssayComponent essay={essay} key = {essay.question}/>
             ))}
         </div>
     )
