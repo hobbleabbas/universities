@@ -41,7 +41,6 @@ export default function ChooseUniversitiesView() {
                 :
 
                 <div>
-                    done loading
                     {   
                         universitiesViewEnabled && !programsViewEnabled ?
 

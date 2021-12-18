@@ -1,5 +1,6 @@
 import { supabase } from "../lib/supabaseClient"
 import { useState, useEffect } from "react"
+import ApplicationView from "./ApplicationView"
 
 export default function ApplicationsListView({ applications }) {
 
@@ -39,24 +40,44 @@ export default function ApplicationsListView({ applications }) {
         <div>
             { loading ? 
 
-            "Loading..."
+            <div>
+                <h2 className="text-xl font-bold">Your Applications</h2>
+            </div>
 
             :
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {applicationList.map((application) => (
-                    <ApplicationCard application={application} key = {application.id} />
-                ))}
-            </div>
+            <ApplicationsView applications={applicationList} />
             
             }
         </div>
     )
 }
 
-export const ApplicationCard = ({ application }) => {
+export const ApplicationsView = ({ applications }) => {
 
-    const [selected, setSelected] = useState(false)
+    const [applicationItem, setApplicationItem] = useState(null)
+    
+    return (
+        <div className="">
+            {
+                applicationItem == null ?
+
+                <div className="grid grid-cols-1 gap-4">
+                    <h2 className="text-xl font-bold">Your Applications</h2>
+                    {applications.map((application) => (
+                        <ApplicationCard application={application} key = {application.id} setApplicationItem = {setApplicationItem} />
+                    ))}
+                </div>
+
+                :
+
+                <ApplicationView application={applicationItem} />
+            }
+        </div>
+    )
+}
+
+export const ApplicationCard = ({ application, setApplicationItem }) => {
 
     return (
         <div className="border border-gray-300 rounded-lg p-4 flex items-center justify-between">
@@ -64,7 +85,7 @@ export const ApplicationCard = ({ application }) => {
                 <img className="w-10" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${application.program.university.id}.png`} />
                 <div className="flex flex-col ml-2">
                     <h3 className="text-md font-medium items-center">
-                        {application.program.university.name}
+                        {application.program.name}
                         <span className={
                             application.status == "Completed" ?
 
@@ -85,13 +106,14 @@ export const ApplicationCard = ({ application }) => {
                             {application.status}
                         </span>
                     </h3>
-                    <p className="text-sm font-regular text-gray-500">{application.program.university.city}, {application.program.university.country}</p>
+                    <p className="text-sm font-regular text-gray-500">{application.program.university.name}</p>
                 </div>
             </div>
             <button
                 type="button"
                 onClick={() => {
-                    
+                    console.log(application)
+                    setApplicationItem(application)
                 }}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
