@@ -43,11 +43,11 @@ export default function ChooseUniversitiesView() {
                 <div>
                     
                     {   
-                        universitiesViewEnabled ?
+                        universitiesViewEnabled && !programsViewEnabled ?
 
                         <UniversitiesView universities={universities} applications={applications} setApplications={setApplications} applicationsLength={applicationsLength} setProgramsViewEnabled={setProgramsViewEnabled} setApplicationsLength={setApplicationsLength} setUniversitiesViewEnabled={setUniversitiesViewEnabled}/>
 
-                        : programsViewEnabled ?
+                        : programsViewEnabled && !universitiesViewEnabled ?
 
                         <ProgramsView applications={applications} />
 
@@ -287,12 +287,12 @@ export const UniversityCard = ({ university, applications, setApplications, setA
                             applications.splice(index, 1);
                         }
                         setApplications([...applications]);
-                        setApplicationsLength(applications.length);
+                        setApplicationsLength(parseInt(applications.length));
                         setSelected(false)
                     } else {
                         applications.push(university.id)
                         setApplications([...applications])
-                        setApplicationsLength(applications.length)
+                        setApplicationsLength(parseInt(applications.length))
                         setSelected(true)
                     }
                 }}
