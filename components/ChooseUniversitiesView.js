@@ -8,28 +8,28 @@ import { useRouter } from "next/router";
 
 export default function ChooseUniversitiesView() {
 
-    const [universities, setUniversities] = useState([]);
+    // const [universities, setUniversities] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [applications, setApplications] = useState([]);
-    const [applicationsLength, setApplicationsLength] = useState(0)
+    // const [applications, setApplications] = useState([]);
+    // const [applicationsLength, setApplicationsLength] = useState(0)
 
     const [universitiesViewEnabled, setUniversitiesViewEnabled] = useState(true);
     const [programsViewEnabled, setProgramsViewEnabled] = useState(false);
 
-    useEffect(async () => {
-        const { data, error } = await supabase
-            .from('universities')
-            .select()
+    // useEffect(async () => {
+    //     const { data, error } = await supabase
+    //         .from('universities')
+    //         .select()
         
-        if (error) {
-            console.log(error);
-            setLoading(false);
-        } else {
-            setUniversities(data);
-            console.log(data)
-            setLoading(false);
-        }
-    }, []);
+    //     if (error) {
+    //         console.log(error);
+    //         setLoading(false);
+    //     } else {
+    //         setUniversities(data);
+    //         console.log(data)
+    //         setLoading(false);
+    //     }
+    // }, []);
 
     return (
         <div>
@@ -41,8 +41,8 @@ export default function ChooseUniversitiesView() {
                 :
 
                 <div>
-                    
-                    {   
+                    done loading
+                    {/* {   
                         universitiesViewEnabled && !programsViewEnabled ?
 
                         <></>
@@ -57,7 +57,7 @@ export default function ChooseUniversitiesView() {
                         :
 
                         <div></div>
-                    }
+                    } */}
                 </div>
             }
         </div>
