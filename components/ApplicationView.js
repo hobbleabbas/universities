@@ -139,7 +139,7 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
 
     const [originalAnswer, setOriginalAnswer] = useState(essay.answer)
     const [answer, setAnswer] = useState(essay.answer)
-    const [count, setCount] = useState(essay.answer.length)
+    const [count, setCount] = useState(essay.char_limit ? essay.answer.length : essay.answer.split(" ").length)
 
     const saveAnswer = async () => {
         const templateReference = doc(firestore, "applications", applicationId);
@@ -148,6 +148,7 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
         data.essays[essayIdx].answer = answer;
         await setDoc(templateReference, data);
         toast("Saved!", { type: "success" })
+        setAnswer(answer)
         setOriginalAnswer(answer)
     }
 
@@ -163,7 +164,7 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
                 placeholder="Add your comment..."
                 onChange={(e) => {
                     setAnswer(e.target.value)
-                    setCount(e.target.value.length)
+                    setCount(essay.char_limit ? e.target.value.length : e.target.value.split(" ").length)
                 }}
                 defaultValue={essay.answer}
             />

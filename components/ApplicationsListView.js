@@ -47,8 +47,10 @@ export default function ApplicationsListView({ applications, setChooseUniversiti
 
             :
 
-            <ApplicationsView applications={applicationList} setChooseUniversities = {setChooseUniversities} />
-            
+            <>
+                <ApplicationsView applications={applicationList} setChooseUniversities = {setChooseUniversities} />
+                {/* <SecondaryApplicationsView /> */}
+            </>
             }
         </div>
     )
@@ -131,6 +133,97 @@ export const ApplicationCard = ({ application, setApplicationItem, setListView }
                 className="hidden sm:block inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
                 Manage Application &rarr;
+            </button>
+        </div>
+    )
+}
+
+export const SecondaryApplicationsView = () => {
+
+    const [secondaryApplications, setSecondaryApplications] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    const fetchSecondaryApplications = async () => {
+        const user = supabase.auth.user()
+
+        const { data, error } = await supabase
+            .from("secondary_applications")
+            .select()
+            .eq("user", user.id)
+
+        if (error) {
+            console.error(error)
+        } else {
+            setSecondaryApplications(data)
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        fetchSecondaryApplications()
+    }, [])
+
+    return (
+        <div className="">
+            <h2 className="text-xl font-bold">Common and Coalition App Essays</h2>
+            {
+                loading ?
+
+                <div>Loading...</div>
+
+                :
+
+                <>
+                    <div className="grid grid-cols-1 gap-4 mt-4">
+                        {secondaryApplications.map((essay) => (
+                            <EssayCard essay={essay} key = {essay.id} />
+                        ))}
+                    </div>
+                    <div className="mt-4"/>
+                    {
+                        secondaryApplications.length < 2 ?
+
+                        <p
+                            onClick={() => {}}
+                            className="text-center text-gray-800 cursor-pointer font-semibold text-sm flex justify-center items-center hover:text-gray-500"
+                        >
+                            <PlusCircleIcon className="w-5 h-5 mr-2" />
+                            Add another essay
+                        </p>
+
+                        :
+
+                        <></>
+                    }
+                </>
+            }
+            
+        </div>
+    )
+}
+
+export const EssayCard = ({ essay }) => {
+
+    return (
+        <div 
+            onClick={() => {
+            }}
+            className="sm:hover:border-gray-300 hover:border-gray-600 border border-gray-300 rounded-lg p-4 flex items-center sm:justify-between">
+            <div className="flex items-center">
+                <img className="w-20 sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/secondary-applications/${essay.type}.png`} />
+                <div className="flex flex-col ml-4">
+                    <h3 className="text-md font-medium">
+                        {essay.type} Essay
+                    </h3>
+                </div>
+            </div>
+            <button
+                type="button"
+                onClick={() => {
+                }}
+                className="hidden sm:block inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+                Edit Essay &rarr;
             </button>
         </div>
     )
