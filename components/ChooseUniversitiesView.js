@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabaseClient";
 import { firestore } from '../lib/firebaseClient';
 import { collection, QueryDocumentSnapshot, DocumentData, query, where, limit, getDocs, doc, getDoc, setDoc } from "@firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 
 export default function ChooseUniversitiesView() {
@@ -115,13 +116,14 @@ export const ProgramsView = ({ applications }) => {
                 .from('applications')
                 .insert({
                     id: application_id,
-                    program: 1,
+                    program: program,
                     user: supabase.auth.user().id,
                 })
 
             if (error) {
                 console.log(error);
             } else {
+                console.log(data);
                 if (selectedPrograms.indexOf(program) == selectedPrograms.length - 1) {
                     router.reload(window.location.pathname)
                 }
@@ -143,14 +145,35 @@ export const ProgramsView = ({ applications }) => {
         return true;
     }
 
+    const checkProgramExists = async (program) => {
+        const { data, error } = await supabase
+            .from('applications')
+            .select()
+            .eq('user', supabase.auth.user().id)
+            .eq('program', program)
+        
+        if (error) {
+            console.log(error);
+            return false;
+        } else {
+            if (data.length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     const handleSubmit = async () => {
         setLoading(true);
         for (const program of selectedPrograms) {
-            console.log(selectedPrograms)
-            await addApplication(program);
+            const exists = await checkProgramExists(program);
+            if (exists === false) {
+                await addApplication(program);
+            } else {
+                toast("Application already exists", { type: "error" });
+            }
         }
-
-        
     }
 
     return (
