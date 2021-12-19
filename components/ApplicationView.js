@@ -3,6 +3,7 @@ import { firestore } from '../lib/firebaseClient';
 import { collection, QueryDocumentSnapshot, DocumentData, query, where, limit, getDocs, doc, getDoc, setDoc } from "@firebase/firestore";
 import { Fragment } from 'react'
 import { Tab } from '@headlessui/react'
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function ApplicationView({ application, setListView }) {
 
@@ -93,7 +94,7 @@ export default function ApplicationView({ application, setListView }) {
                         </Tab.List>
                         <Tab.Panels className="focus:outline-none">
                             <Tab.Panel className="focus:outline-none">
-                                <EssaysView application={applicationData} />
+                                <EssaysView application={applicationData} applicationId={application.id} />
                             </Tab.Panel>
                             <Tab.Panel>
                                 Coming soon!
@@ -109,21 +110,31 @@ export default function ApplicationView({ application, setListView }) {
     )
 }
 
-export const EssaysView = ({ application }) => {
+export const EssaysView = ({ application, applicationId }) => {
     return (
         <div>
-            {application.essays.map((essay) => (
-                <EssayComponent essay={essay} key = {essay.question}/>
+            {application.essays.map((essay, essayIdx) => (
+                <EssayComponent essay={essay} key = {essay.question} essayIdx={essayIdx} applicationId={applicationId}/>
             ))}
         </div>
     )
 }
 
-export const EssayComponent = ({ essay }) => {
+export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
 
     const [originalAnswer, setOriginalAnswer] = useState(essay.answer)
     const [answer, setAnswer] = useState(essay.answer)
     const [count, setCount] = useState(essay.answer.length)
+
+    const saveAnswer = async () => {
+        const templateReference = doc(firestore, "applications", applicationId);
+        const template = await getDoc(templateReference);
+        const data = template.data();
+        data.essays[essayIdx].answer = answer;
+        await setDoc(templateReference, data);
+        toast("Saved!", { type: "success" })
+        setOriginalAnswer(answer)
+    }
 
     return (
         <div className="mt-4">
@@ -143,13 +154,14 @@ export const EssayComponent = ({ essay }) => {
             />
             <div className="mt-2 flex justify-end items-center">
                 <p className="text-gray-500 font-medium">
-                    <span className="text-sm">{count}/{essay.limit} {essay.char_limit == true ? "Characters" : "Words"} Used</span>
+                    <span className="text-sm"><span className={count > essay.limit ? "text-red-600" : ""}>{count}</span>/{essay.limit} {essay.char_limit == true ? "Characters" : "Words"} Used</span>
                 </p>
                 {
                     answer != originalAnswer ?
 
                     <button
                         type="submit"
+                        onClick={() => {saveAnswer()}}
                         className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                         Save
