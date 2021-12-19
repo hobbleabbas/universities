@@ -96,7 +96,7 @@ export default function Home() {
             </div>
           </div>
         </main>
-        <p className='text-md font-medium text-center'>A <Link href = "https://www.hobble.ca"><a href = "https://www.hobble.ca" className='text-blue-600'>Hobbleabbas</a></Link> Production</p>
+        <p className='text-md font-medium text-center my-8'>A <Link href = "https://www.hobble.ca"><a href = "https://www.hobble.ca" className='text-blue-600'>Hobbleabbas</a></Link> Production</p>
       </div>
     </div>
   )
