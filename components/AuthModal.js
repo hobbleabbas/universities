@@ -11,17 +11,6 @@ export default function AuthModal() {
             <Tab.Group>
                 <Tab.List className="w-full border p-1 rounded-lg border-gray-300 shadow-sm focus:outline-none">
                     <Tab as={Fragment}>
-                        {({ selected }) => (
-                            <button
-                                className={
-                                    selected ? 'focus:outline-none bg-blue-100 rounded-md text-blue-600 font-semibold text-white p-2 w-1/2' : 'focus:outline-none bg-white rounded-md text-gray-600 font-semibold text-white p-2 w-1/2'
-                                }
-                            >
-                            Sign Up
-                            </button>
-                        )}
-                    </Tab>
-                    <Tab as={Fragment}>
                     {({ selected }) => (
                             <button
                                 className={
@@ -32,13 +21,24 @@ export default function AuthModal() {
                             </button>
                         )}
                     </Tab>
+                    <Tab as={Fragment}>
+                        {({ selected }) => (
+                            <button
+                                className={
+                                    selected ? 'focus:outline-none bg-blue-100 rounded-md text-blue-600 font-semibold text-white p-2 w-1/2' : 'focus:outline-none bg-white rounded-md text-gray-600 font-semibold text-white p-2 w-1/2'
+                                }
+                            >
+                            Sign Up
+                            </button>
+                        )}
+                    </Tab>
                 </Tab.List>
                 <Tab.Panels className="focus:outline-none">
-                    <Tab.Panel className="focus:outline-none">
-                        <SignUpView />
-                    </Tab.Panel>
                     <Tab.Panel>
                         <LogInView />
+                    </Tab.Panel>
+                    <Tab.Panel className="focus:outline-none">
+                        <SignUpView />
                     </Tab.Panel>
                 </Tab.Panels>
                 </Tab.Group>

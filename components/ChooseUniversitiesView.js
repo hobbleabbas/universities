@@ -106,7 +106,7 @@ export const ProgramsView = ({ applications }) => {
         const application_id = uuidv4();
 
         // Fetch the template
-        const template = await fetchTemplate(String(program.id));
+        const template = await fetchTemplate(String(program));
         const status = await createApplication(template, application_id);
 
         if (status === true) {
@@ -122,11 +122,9 @@ export const ProgramsView = ({ applications }) => {
             if (error) {
                 console.log(error);
             } else {
-                console.log(data)
-
-                // if (selectedPrograms.indexOf(program.id) == selectedPrograms.length - 1) {
-                //     router.reload(window.location.pathname)
-                // }
+                if (selectedPrograms.indexOf(program) == selectedPrograms.length - 1) {
+                    router.reload(window.location.pathname)
+                }
             }
         }
 
@@ -142,13 +140,13 @@ export const ProgramsView = ({ applications }) => {
 
     const createApplication = async (template, application_id) => {
         await setDoc(doc(firestore, "applications", application_id), template);
-
         return true;
     }
 
     const handleSubmit = async () => {
         setLoading(true);
         for (const program of selectedPrograms) {
+            console.log(selectedPrograms)
             await addApplication(program);
         }
 
@@ -202,7 +200,7 @@ export const ProgramsView = ({ applications }) => {
     )
 }
 
-export const ProgramSelector = ({ university, selectedTotal, setSelectedTotal, setSelectedPrograms }) => {
+export const ProgramSelector = ({ university, selectedTotal, setSelectedTotal, selectedPrograms, setSelectedPrograms }) => {
 
     const [programs, setPrograms] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -249,7 +247,7 @@ export const ProgramSelector = ({ university, selectedTotal, setSelectedTotal, s
                     onChange={(e) => {
                         if (e.target.value != "NULL") {
                             setSelectedTotal(selectedTotal + 1)
-                            setSelectedPrograms([...programs, e.target.value])
+                            setSelectedPrograms([...selectedPrograms, e.target.value])
                         }
                     }}
                 >
