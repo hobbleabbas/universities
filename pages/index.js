@@ -75,13 +75,13 @@ export default function Home() {
         
                   <div className="" />
                   {
-                    applications.length > 0 ?
+                    applications.length && !chooseUniversities > 0 ?
 
-                    <ApplicationsListView applications = {applications} />
+                    <ApplicationsListView applications = {applications} setChooseUniversities={setChooseUniversities} />
 
                     : chooseUniversities ?
 
-                    <ChooseUniversitiesView user = {user}/>
+                    <ChooseUniversitiesView user = {user} setChooseUniversities={setChooseUniversities} />
 
                     :
 

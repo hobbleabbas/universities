@@ -4,7 +4,7 @@ import { collection, QueryDocumentSnapshot, DocumentData, query, where, limit, g
 import { Fragment } from 'react'
 import { Tab } from '@headlessui/react'
 
-export default function ApplicationView({ application }) {
+export default function ApplicationView({ application, setListView }) {
 
     const [loading, setLoading] = useState(true)
     const [applicationData, setApplicationData] = useState(null)
@@ -24,6 +24,7 @@ export default function ApplicationView({ application }) {
 
     return (
         <div>
+            <p onClick={()=>{setListView(true)}} className="cursor-pointer underline font-medium mb-3 hover:text-gray-500">&larr; Go Back</p>
             <h2 className="text-xl font-bold flex items-center">
                 Manage Application: {application.program.name}
                 <span className={

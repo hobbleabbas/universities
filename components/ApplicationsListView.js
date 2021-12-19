@@ -1,8 +1,9 @@
 import { supabase } from "../lib/supabaseClient"
 import { useState, useEffect } from "react"
 import ApplicationView from "./ApplicationView"
+import { PlusCircleIcon } from "@heroicons/react/solid"
 
-export default function ApplicationsListView({ applications }) {
+export default function ApplicationsListView({ applications, setChooseUniversities }) {
 
     const [loading, setLoading] = useState(true)
     const [applicationList, setApplicationList] = useState([])
@@ -46,43 +47,56 @@ export default function ApplicationsListView({ applications }) {
 
             :
 
-            <ApplicationsView applications={applicationList} />
+            <ApplicationsView applications={applicationList} setChooseUniversities = {setChooseUniversities} />
             
             }
         </div>
     )
 }
 
-export const ApplicationsView = ({ applications }) => {
+export const ApplicationsView = ({ applications, setChooseUniversities }) => {
 
     const [applicationItem, setApplicationItem] = useState(null)
+    const [listView, setListView] = useState(true)
     
     return (
         <div className="">
             {
-                applicationItem == null ?
+                listView ?
 
                 <div className="grid grid-cols-1 gap-4">
                     <h2 className="text-xl font-bold">Your Applications</h2>
                     {applications.map((application) => (
-                        <ApplicationCard application={application} key = {application.id} setApplicationItem = {setApplicationItem} />
+                        <ApplicationCard application={application} key = {application.id} setApplicationItem = {setApplicationItem} setListView={setListView} />
                     ))}
+                    <p
+                        onClick={() => setChooseUniversities(true)}
+                        className="text-center text-gray-800 cursor-pointer font-semibold text-sm flex justify-center items-center hover:text-gray-500"
+                    >
+                        <PlusCircleIcon className="w-5 h-5 mr-2" />
+                        Add another application
+                    </p>
                 </div>
 
                 :
 
-                <ApplicationView application={applicationItem} />
+                <ApplicationView application={applicationItem} setListView = {setListView} />
             }
         </div>
     )
 }
 
-export const ApplicationCard = ({ application, setApplicationItem }) => {
+export const ApplicationCard = ({ application, setApplicationItem, setListView }) => {
 
     return (
-        <div className="border border-gray-300 rounded-lg p-4 flex items-center justify-between">
+        <div 
+            onClick={() => {
+                setListView(false)
+                setApplicationItem(application)
+            }}
+            className="sm:hover:border-gray-300 hover:border-gray-600 border border-gray-300 rounded-lg p-4 flex items-center sm:justify-between">
             <div className="flex">
-                <img className="w-10" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${application.program.university.id}.png`} />
+                <img className="w-10 sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${application.program.university.id}.png`} />
                 <div className="flex flex-col ml-2">
                     <h3 className="text-md font-medium items-center">
                         {application.program.name}
@@ -112,10 +126,9 @@ export const ApplicationCard = ({ application, setApplicationItem }) => {
             <button
                 type="button"
                 onClick={() => {
-                    console.log(application)
                     setApplicationItem(application)
                 }}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="hidden sm:block inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
                 Manage Application &rarr;
             </button>
