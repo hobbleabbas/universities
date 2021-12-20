@@ -164,15 +164,14 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
             <p className="text-sm mb-3">{essay.description}</p>
             <textarea
                 rows={5}
-                name="comment"
-                id="comment"
+                id={essayIdx + "-essay"}
                 className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                placeholder="Add your comment..."
+                placeholder="Add your answer..."
                 onChange={(e) => {
                     setAnswer(e.target.value)
                     setCount(essay.char_limit ? e.target.value.length : e.target.value.split(" ").length)
                 }}
-                defaultValue={answers[answerIdx]}
+                defaultValue={answer}
             />
             <div className="mt-2 flex justify-end items-center">
             {/* <img src={"/git.svg"} alt="" className="flex-shrink-0 h-5 w-5 rounded-full" /> */}
@@ -194,7 +193,8 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
                                 const newTemplate = await getDoc(newTemplateReference);
                                 const newData = newTemplate.data();
                                 setAnswers(newData.essays[essayIdx].answers)
-                                e.target.value = answers.length
+                                const elementId = essayIdx + "-essay"
+                                document.getElementById(elementId).value = "Add your answer..."
                             } catch (err) {
                                 toast(err.message, { type: "error" })
                             }
@@ -202,6 +202,8 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
                             setAnswerIdx(parseInt(e.target.value))
                             setAnswer(answers[parseInt(e.target.value)])
                             setOriginalAnswer(answers[parseInt(e.target.value)])
+                            const elementId = essayIdx + "-essay"
+                            document.getElementById(elementId).value = answers[parseInt(e.target.value)]
                         }
                     }
                 }
