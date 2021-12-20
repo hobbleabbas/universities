@@ -1,10 +1,14 @@
 import { useState, useEffect, Fragment, useRef} from "react"
 import { firestore } from '../lib/firebaseClient';
 import { collection, QueryDocumentSnapshot, DocumentData, query, where, limit, getDocs, doc, getDoc, setDoc } from "@firebase/firestore";
-import { Tab, Dialog, Transition } from '@headlessui/react'
+import { Tab, Dialog, Transition, Listbox} from '@headlessui/react'
 import toast, { Toaster } from 'react-hot-toast';
 import { supabase } from "../lib/supabaseClient";
 import { TrashIcon, ExclamationIcon } from "@heroicons/react/solid";
+
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+}
 
 export default function ApplicationView({ application, setListView }) {
 
@@ -137,15 +141,17 @@ export const EssaysView = ({ application, applicationId }) => {
 
 export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
 
-    const [originalAnswer, setOriginalAnswer] = useState(essay.answer)
-    const [answer, setAnswer] = useState(essay.answer)
-    const [count, setCount] = useState(essay.char_limit ? essay.answer.length : essay.answer.split(" ").length)
-
+    const [originalAnswer, setOriginalAnswer] = useState(essay.answers[0])
+    const [answers, setAnswers] = useState(essay.answers)
+    const [answer, setAnswer] = useState(essay.answers[0])
+    const [answerIdx, setAnswerIdx] = useState(0)
+    const [count, setCount] = useState(essay.char_limit ? essay.answers[0].length : essay.answers[0].split(" ").length)
+    // essay.char_limit ? essay.answers[0].length : essay.answers[0].split(" ").length
     const saveAnswer = async () => {
         const templateReference = doc(firestore, "applications", applicationId);
         const template = await getDoc(templateReference);
         const data = template.data();
-        data.essays[essayIdx].answer = answer;
+        data.essays[essayIdx].answers[answerIdx] = answer;
         await setDoc(templateReference, data);
         toast("Saved!", { type: "success" })
         setAnswer(answer)
@@ -166,9 +172,49 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
                     setAnswer(e.target.value)
                     setCount(essay.char_limit ? e.target.value.length : e.target.value.split(" ").length)
                 }}
-                defaultValue={essay.answer}
+                defaultValue={answers[answerIdx]}
             />
             <div className="mt-2 flex justify-end items-center">
+            {/* <img src={"/git.svg"} alt="" className="flex-shrink-0 h-5 w-5 rounded-full" /> */}
+                <select onChange = {
+                    async (e) => {
+                        if (e.target.value == "new") {
+                            try {
+                                const templateReference = doc(firestore, "applications", applicationId);
+                                const template = await getDoc(templateReference);
+                                const data = template.data();
+                                data.essays[essayIdx].answers[answers.length] = "";
+                                await setDoc(templateReference, data);
+                                toast("Created New Version!", { type: "success" })
+                                setAnswer("")
+                                setOriginalAnswer("")
+                                setAnswerIdx(answers.length)
+                                // Rerender options list
+                                const newTemplateReference = doc(firestore, "applications", applicationId);
+                                const newTemplate = await getDoc(newTemplateReference);
+                                const newData = newTemplate.data();
+                                setAnswers(newData.essays[essayIdx].answers)
+                                e.target.value = answers.length
+                            } catch (err) {
+                                toast(err.message, { type: "error" })
+                            }
+                        } else {
+                            setAnswerIdx(parseInt(e.target.value))
+                            setAnswer(answers[parseInt(e.target.value)])
+                            setOriginalAnswer(answers[parseInt(e.target.value)])
+                        }
+                    }
+                }
+                    className="focus:outline-none relative inline-flex items-center rounded-md py-2 px-2 bg-gray-50 mr-4 text-sm font-medium text-gray-800 whitespace-nowrap hover:bg-gray-100 sm:px-4"
+                >   
+                
+                    {answers.map((answer, idx) => (
+                        <option key={idx} value={idx}>
+                            Version {idx + 1}
+                        </option>
+                    ))}
+                    <option value="new">Create a new version</option>
+                </select>
                 <p className="text-gray-500 font-medium">
                     <span className="text-sm"><span className={count > essay.limit ? "text-red-600" : ""}>{count}</span>/{essay.limit} {essay.char_limit == true ? "Characters" : "Words"} Used</span>
                 </p>
