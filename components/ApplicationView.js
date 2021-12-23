@@ -163,7 +163,7 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
             <h4 className="text-md font-medium mb-2">{essay.required ? <span className="text-red-600">Required: </span> : <></>} {essay.question} - Max {essay.limit} {essay.char_limit == true ? "Characters" : "Words"}</h4>
             <p className="text-sm mb-3">{essay.description}</p>
             <textarea
-                rows={5}
+                rows={essay.char_limit ? 5 : essay.limit/15 > 5 ? essay.limit/15 : 5}
                 id={essayIdx + "-essay"}
                 className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
                 placeholder="Add your answer..."
