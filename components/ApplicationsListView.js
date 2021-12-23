@@ -98,7 +98,7 @@ export const ApplicationCard = ({ application, setApplicationItem, setListView }
             }}
             className="sm:hover:border-gray-300 hover:border-gray-600 border border-gray-300 rounded-lg p-4 flex items-center sm:justify-between">
             <div className="flex">
-                <img className="w-10 sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${application.program.university.id}.png`} />
+                <img className="w-10 h-10 sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${application.program.university.id}.png`} />
                 <div className="flex flex-col ml-2">
                     <h3 className="text-md font-medium items-center">
                         {application.program.name}
@@ -228,7 +228,7 @@ export const EssayCard = ({ essay }) => {
             }}
             className="sm:hover:border-gray-300 hover:border-gray-600 border border-gray-300 rounded-lg p-4 flex items-center sm:justify-between">
             <div className="flex items-center">
-                <img className="w-20 sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/secondary-applications/${essay.type}.png`} />
+                <img className="w-20 sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/secondary-applications/${essay.type}`} />
                 <div className="flex flex-col ml-4">
                     <h3 className="text-md font-medium">
                         {essay.type} Essay
