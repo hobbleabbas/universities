@@ -292,7 +292,9 @@ export const UniversityCard = ({ university, applications, setApplications, setA
     return (
         <div key={university.id} className="border border-gray-300 rounded-lg p-4 flex items-center justify-between">
             <div className="flex">
-                <img className="w-10 h-10" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${university.id}.png`} />
+                <div className="w-10 flex items-center justify-center">
+                    <img className="h-10" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${university.id}.png`} />
+                </div>
                 <div className="flex flex-col ml-2">
                     <h3 className="text-md font-medium">{university.name}</h3>
                     <p className="text-sm font-regular text-gray-500">{university.city}, {university.country}</p>
