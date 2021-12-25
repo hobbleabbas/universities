@@ -60,7 +60,7 @@ export default function ApplicationView({ application, setListView }) {
                     onClick={() => {
                         setDeleteModalOpen(true)
                     }}
-                    className="inline-flex items-center px-3 py-2 border border-red-600 border-2 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="inline-flex items-center px-3 py-2 border border-red-600 border-2 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                     <TrashIcon className="w-4 h-4 mr-2" />
                     Delete Application
@@ -115,8 +115,8 @@ export default function ApplicationView({ application, setListView }) {
                             <Tab.Panel className="focus:outline-none">
                                 <EssaysView application={applicationData} applicationId={application.id} />
                             </Tab.Panel>
-                            <Tab.Panel>
-                                Coming soon!
+                            <Tab.Panel className="focus:outline-none">
+                                <DocumentsView application={applicationData} applicationId={application.id} />
                             </Tab.Panel>
                             <Tab.Panel>
                                 Coming soon!
@@ -327,5 +327,49 @@ export const DeleteModal = ({ applicationId, open, setOpen }) => {
                 </div>
             </Dialog>
             </Transition.Root>
+    )
+}
+
+export const DocumentsView = ({ application, applicationId }) => {
+
+    const changeStatus = async (e) => {
+        const templateReference = doc(firestore, "applications", applicationId);
+        const template = await getDoc(templateReference);
+        const data = template.data();
+        data.documents[e.target.id.replace( /^\D+/g, '')].complete = e.target.checked;
+        await setDoc(templateReference, data);
+        toast("Saved!", { type: "success" })
+    }
+
+    return (
+        <div className="flex flex-col focus:outline-none">
+            <fieldset className="border-t border-b border-gray-200">
+                <legend className="sr-only">Notifications</legend>
+                    <div className="divide-y divide-gray-200">
+                        {application.documents.map((document, index) => (
+                            <label htmlFor={"document_" + index} className="relative flex items-start py-4 cursor-pointer">
+                                <div className="min-w-0 flex-1 text-sm">
+                                    <span className="font-medium text-gray-700">
+                                    {document.type}
+                                    </span>
+                                    <p id="comments-description" className="text-gray-500">
+                                    {document.required ? <>This is a <b className="text-gray-800">required</b> document</> : <>This is an optional document</>}
+                                    </p>
+                                </div>
+                                <div className="ml-3 flex items-center h-5">
+                                    <input
+                                        id={"document_" + index}
+                                        type="checkbox"
+                                        defaultChecked={document.complete}
+                                        onChange={changeStatus}
+                                        className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                    />
+                                </div>
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+            
+        </div>
     )
 }
