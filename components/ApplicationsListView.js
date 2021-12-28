@@ -105,7 +105,7 @@ export const ApplicationCard = ({ application, setApplicationItem, setListView }
                     <h3 className="text-md font-medium items-center">
                         {application.program.name}
                         <span className={
-                            application.status == "Completed" ?
+                            application.status == "Complete" ?
 
                             "ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
 
