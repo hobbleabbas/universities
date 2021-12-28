@@ -347,7 +347,7 @@ export const DocumentsView = ({ application, applicationId }) => {
                 <legend className="sr-only">Notifications</legend>
                     <div className="divide-y divide-gray-200">
                         {application.documents.map((document, index) => (
-                            <label htmlFor={"document_" + index} className="relative flex items-start py-4 cursor-pointer">
+                            <label htmlFor={"document_" + index} key={index} className="relative flex items-start py-4 cursor-pointer">
                                 <div className="min-w-0 flex-1 text-sm">
                                     <span className="font-medium text-gray-700">
                                     {document.type}
