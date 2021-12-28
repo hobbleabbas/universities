@@ -67,7 +67,7 @@ export const ApplicationsView = ({ applications, setChooseUniversities }) => {
                 listView ?
 
                 <div className="grid grid-cols-1 gap-4">
-                    <h2 className="text-xl font-bold">Your Applications {!loading ? `(${applications.length})` : <></>}</h2>
+                    <h2 className="text-xl font-bold">Your Applications {`(${applications.length})`}</h2>
                     {applications.map((application) => (
                         <ApplicationCard application={application} key = {application.id} setApplicationItem = {setApplicationItem} setListView={setListView} />
                     ))}
