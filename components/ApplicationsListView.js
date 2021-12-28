@@ -42,7 +42,7 @@ export default function ApplicationsListView({ applications, setChooseUniversiti
             { loading ? 
 
             <div>
-                <h2 className="text-xl font-bold">Your Applications</h2>
+                <h2 className="text-xl font-bold">Your Applications {!loading ? `(${applications.length})` : <></>}</h2>
             </div>
 
             :
