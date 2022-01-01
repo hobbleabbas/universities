@@ -23,10 +23,12 @@ export default function ApplicationsListView({ applications, setChooseUniversiti
                         name,
                         city,
                         country
-                    )
+                    ),
+                    due
                 )
             `)
             .eq("user", user.id)
+            .order('due', { ascending: true })
 
         if (error) {
             console.error(error)

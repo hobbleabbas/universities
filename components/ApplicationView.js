@@ -146,7 +146,14 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
     const [answer, setAnswer] = useState(essay.answers[0])
     const [answerIdx, setAnswerIdx] = useState(0)
     const [count, setCount] = useState(essay.char_limit ? essay.answers[0].length : essay.answers[0].split(" ").length)
-    // essay.char_limit ? essay.answers[0].length : essay.answers[0].split(" ").length
+    
+    // const inputElement = useRef(null)
+    // element.addEventListener('keydown', function(e) {
+    //     if(e.keyCode == 13 && e.metaKey) {
+    //         this.form.submit();
+    //     }
+    // });
+
     const saveAnswer = async () => {
         const templateReference = doc(firestore, "applications", applicationId);
         const template = await getDoc(templateReference);
@@ -207,7 +214,7 @@ export const EssayComponent = ({ essay, applicationId, essayIdx }) => {
                         }
                     }
                 }
-                    className="focus:outline-none relative inline-flex items-center rounded-md py-2 px-2 bg-gray-50 mr-4 text-sm font-medium text-gray-800 whitespace-nowrap hover:bg-gray-100 sm:px-4"
+                    className="focus:outline-none relative inline-flex items-center rounded-md py-2 px-2 bg-white mr-4 text-sm font-medium text-gray-800 whitespace-nowrap hover:bg-gray-100 sm:px-4"
                 >   
                 
                     {answers.map((answer, idx) => (
