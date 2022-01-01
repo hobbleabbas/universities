@@ -28,7 +28,6 @@ export default function ApplicationsListView({ applications, setChooseUniversiti
                 )
             `)
             .eq("user", user.id)
-            .order('due', { ascending: true })
 
         if (error) {
             console.error(error)
