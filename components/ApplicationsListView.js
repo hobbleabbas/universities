@@ -99,7 +99,7 @@ export const ApplicationCard = ({ application, setApplicationItem, setListView }
             }}
             className="sm:hover:border-gray-300 hover:border-gray-600 border border-gray-300 rounded-lg p-4 flex items-center sm:justify-between">
             <div className="flex">
-                <div className="w-10 flex items-center justify-center">
+                <div className="w-10 h-10 flex items-center justify-center">
                     <img className="sm:block hidden" src = {`https://pamyiidbjyfvqvkglyiw.supabase.in/storage/v1/object/public/logos/${application.program.university.id}.png`} />
                 </div>
                 <div className="flex flex-col ml-2">
